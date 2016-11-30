@@ -63,9 +63,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="thereYouGo.css" />
     <VSCTCompile Include="CommandPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
+    <Content Include="HTMLPage.html" />
     <Content Include="index.html" />
     <Content Include="Resources\Command.png" />
     <Content Include="Resources\CommandPackage.ico" />

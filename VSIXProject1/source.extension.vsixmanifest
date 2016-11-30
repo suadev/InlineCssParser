@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="VSIXProject1.Suat KÖSE.39aae44f-13c5-4fbe-a6a1-25653d68bc77" Version="1.0" Language="en-US" Publisher="Suat KÖSE" />
-    <DisplayName>VSIXProject1</DisplayName>
+    <Identity Id="InlineCssParser.Suat KÖSE.39aae44f-13c5-4fbe-a6a1-25653d68bc77" Version="1.0" Language="en-US" Publisher="Suat KÖSE" />
+    <DisplayName>InlineCssParser</DisplayName>
     <Description>Empty VSIX Project.</Description>
   </Metadata>
   <Installation>

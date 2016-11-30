@@ -10,8 +10,10 @@ using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
+using System.Linq;
+using System.Collections.Generic;
 
-namespace VSIXProject1
+namespace InlineCssParser
 {
     /// <summary>
     /// Command handler
@@ -22,6 +24,7 @@ namespace VSIXProject1
         /// Command ID.
         /// </summary>
         public const int CommandId = 0x0100;
+        List<HtmlElement> list = new List<HtmlElement>();
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -100,18 +103,43 @@ namespace VSIXProject1
             var text = txtDoc.CreateEditPoint(txtDoc.StartPoint).GetText(txtDoc.EndPoint);
 
             if (txtDoc.Language == "HTMLX" || txtDoc.Language == "HTML")
-            {            // Show a message box to prove we were here
-                VsShellUtilities.ShowMessageBox(
-                    this.ServiceProvider,
-                    text,
-                    "suat",
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            {
+                //// Show a message box to prove we were here
+                //VsShellUtilities.ShowMessageBox(
+                //    this.ServiceProvider,
+                //    text,
+                //    "File content",
+                //    OLEMSGICON.OLEMSGICON_INFO,
+                //    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                //    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
 
-                // text elimizde, bunu parse edecek bir engine yazılacak.
+                var parsed = ParseHtml(text);
+                var cssFileContent = string.Empty;
 
+                foreach (var item in list)
+                {
+                    item.Id = string.IsNullOrEmpty(item.Id) ? "x" : item.Id;
 
+                    var replaceText = string.Format("{0} id=\"{1}\" class=\"{2}\"", item.Name, item.Id, item.Id);
+                    parsed = parsed.Replace(item.Guid, replaceText);
+                    cssFileContent += string.Format(".{0}{{{1}}}\n\n", item.Id, "\n" + item.Style);
+                }
+
+                cssFileContent = cssFileContent.Replace(";", ";\n");
+
+                //existing html file
+                TextSelection txtSelHtml = (TextSelection)doc.Selection;
+                txtSelHtml.SelectAll();
+                txtSelHtml.Delete();
+                txtSelHtml.Insert(parsed);
+
+                //newly created css file
+                string solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+                dte.ItemOperations.NewFile(@"General\Text File", "thereYouGo.css", EnvDTE.Constants.vsViewKindTextView);
+                TextSelection txtSelCss = (TextSelection)dte.ActiveDocument.Selection;
+                txtSelCss.SelectAll();
+                txtSelCss.Delete();
+                txtSelCss.Insert(cssFileContent);
             }
             else
             {
@@ -123,8 +151,71 @@ namespace VSIXProject1
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
+        }
 
+        private string ParseHtml(string text)
+        {
+            int pointer = 0;
+            var startTagIndex = 0;
+            var endTagIndex = 0;
 
+            while (text.Contains("; ")) //style tag i içerisindeki boşluklar trim ediliyor. alttaki split'i bozmasın diye
+            {
+                text = text.Replace("; ", ";");
+            }
+
+            while (pointer < text.Length || startTagIndex == -1 || endTagIndex == -1)
+            {
+                startTagIndex = text.IndexOf('<', pointer);
+                endTagIndex = text.IndexOf('>', pointer);
+                var elementText = text.Substring(startTagIndex + 1, (endTagIndex - (startTagIndex + 1)));
+
+                if (elementText.Contains("style"))
+                {
+                    var parsedElement = elementText.Split(' ');
+
+                    var elementName = parsedElement[0];
+                    var elementId = string.Empty;
+                    var elementStyle = string.Empty;
+                    var guid = Guid.NewGuid().ToString();
+
+                    var idAttr = parsedElement.FirstOrDefault(q => q.Contains("id"));
+                    if (idAttr != null)
+                    {
+                        elementId = idAttr.Replace("id=", string.Empty).Replace("\"", string.Empty);
+                    }
+
+                    var styleAttr = parsedElement.FirstOrDefault(q => q.Contains("style"));
+                    if (styleAttr != null)
+                    {
+                        elementStyle = styleAttr.Replace("style=", string.Empty).Replace("\"", string.Empty);
+                    }
+
+                    list.Add(new HtmlElement
+                    {
+                        Id = elementId,
+                        Name = elementName,
+                        Style = elementStyle,
+                        Guid = guid
+                    });
+
+                    text = text.Replace(elementText, guid);
+                    pointer = text.IndexOf('>', text.IndexOf(guid)) + 1;
+                }
+                else
+                {
+                    pointer = endTagIndex + 1;
+                }
+            }
+            return text;
+        }
+
+        public class HtmlElement
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public string Style { get; set; }
+            public string Guid { get; set; }
         }
     }
 }

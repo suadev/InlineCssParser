@@ -37,7 +37,7 @@
          must be a menu. -->
     <Groups>
       <Group guid="guidCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_PROJECT"/>
+        <Parent guid="guidHtmlCtxMenu" id="IDM_HTMLCTXMENU"/>
       </Group>
     </Groups>
 
@@ -54,9 +54,9 @@
           If you do not want an image next to your command, remove the Icon node /> -->
       <Button guid="guidCommandPackageCmdSet" id="CommandId" priority="0x0100" type="Button">
         <Parent guid="guidCommandPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidImages" id="bmpPicSearch" />
         <Strings>
-          <ButtonText>Get file content</ButtonText>
+          <ButtonText>Unbundle Inline Styles!</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -73,6 +73,11 @@
   </Commands>
 
   <Symbols>
+
+    <GuidSymbol name="guidHtmlCtxMenu" value="{78F03954-2FB8-4087-8CE7-59D71710B3BB}">
+      <IDSymbol name="IDM_HTMLCTXMENU" value="1" />
+    </GuidSymbol>
+
     <!-- This is the package guid. -->
     <GuidSymbol name="guidCommandPackage" value="{80ff1353-14f0-4cd4-a639-13d6aa0a098c}" />
 
