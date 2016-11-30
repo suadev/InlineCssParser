@@ -1,12 +1,5 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="Command.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
-using System;
+﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
@@ -24,7 +17,6 @@ namespace InlineCssParser
         /// Command ID.
         /// </summary>
         public const int CommandId = 0x0100;
-        List<HtmlElement> list = new List<HtmlElement>();
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -102,120 +94,156 @@ namespace InlineCssParser
             TextDocument txtDoc = doc.Object() as TextDocument;
             var text = txtDoc.CreateEditPoint(txtDoc.StartPoint).GetText(txtDoc.EndPoint);
 
+
+
             if (txtDoc.Language == "HTMLX" || txtDoc.Language == "HTML")
             {
-                //// Show a message box to prove we were here
-                //VsShellUtilities.ShowMessageBox(
-                //    this.ServiceProvider,
-                //    text,
-                //    "File content",
-                //    OLEMSGICON.OLEMSGICON_INFO,
-                //    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                //    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-
-                var parsed = ParseHtml(text);
+                var elementList = new List<HtmlElement>();
+                var parsed = ParseHtml(text, elementList, txtDoc);
                 var cssFileContent = string.Empty;
 
-                foreach (var item in list)
+                if (elementList.Any())
                 {
-                    item.Id = string.IsNullOrEmpty(item.Id) ? "x" : item.Id;
+                    foreach (var item in elementList)
+                    {
+                        var cssClass = string.IsNullOrEmpty(item.Class) ? (string.IsNullOrEmpty(item.Id) ? CreateUniqueElementKey(item.Name, item.LineNumber) : item.Id) : item.Class;
 
-                    var replaceText = string.Format("{0} id=\"{1}\" class=\"{2}\"", item.Name, item.Id, item.Id);
-                    parsed = parsed.Replace(item.Guid, replaceText);
-                    cssFileContent += string.Format(".{0}{{{1}}}\n\n", item.Id, "\n" + item.Style);
+                        var idAttr = string.IsNullOrEmpty(item.Id) ? string.Empty : string.Format("id=\"{0}\"", item.Id);
+
+                        var replaceText = string.Format("{0} {1} class=\"{2}\"", item.Name, idAttr, cssClass);
+
+                        parsed = parsed.Replace(item.Guid, replaceText);
+
+                        cssFileContent += string.Format(".{0}{{{1}}}\n\n", cssClass, "\n" + item.Style);
+                    }
+
+                    //css file beautification
+                    cssFileContent = cssFileContent.Replace(";", ";\n");
+
+                    //existing html file
+                    TextSelection txtSelHtml = (TextSelection)doc.Selection;
+                    txtSelHtml.SelectAll();
+                    txtSelHtml.Delete();
+                    txtSelHtml.Insert(parsed);
+
+                    //newly created css file
+                    var docName = doc.Name.Substring(0, doc.Name.IndexOf('.'));
+                    docName = string.Format("{0}.css", docName);
+                    string solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+                    dte.ItemOperations.NewFile(@"General\Text File", docName, EnvDTE.Constants.vsViewKindTextView);
+                    TextSelection txtSelCss = (TextSelection)dte.ActiveDocument.Selection;
+                    txtSelCss.SelectAll();
+                    txtSelCss.Delete();
+                    txtSelCss.Insert(cssFileContent);
                 }
-
-                cssFileContent = cssFileContent.Replace(";", ";\n");
-
-                //existing html file
-                TextSelection txtSelHtml = (TextSelection)doc.Selection;
-                txtSelHtml.SelectAll();
-                txtSelHtml.Delete();
-                txtSelHtml.Insert(parsed);
-
-                //newly created css file
-                string solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
-                dte.ItemOperations.NewFile(@"General\Text File", "thereYouGo.css", EnvDTE.Constants.vsViewKindTextView);
-                TextSelection txtSelCss = (TextSelection)dte.ActiveDocument.Selection;
-                txtSelCss.SelectAll();
-                txtSelCss.Delete();
-                txtSelCss.Insert(cssFileContent);
+                else
+                {
+                    VsShellUtilities.ShowMessageBox(this.ServiceProvider, "Not found inline css!", "Oops!",
+                        OLEMSGICON.OLEMSGICON_INFO,
+                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                }
             }
             else
             {
-                VsShellUtilities.ShowMessageBox(
-                    this.ServiceProvider,
-                    "Invalid file!",
-                    "ops!",
-                    OLEMSGICON.OLEMSGICON_INFO,
+                VsShellUtilities.ShowMessageBox(this.ServiceProvider, "This is not a html file!", "Oops!",
+                    OLEMSGICON.OLEMSGICON_WARNING,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
         }
 
-        private string ParseHtml(string text)
+        private string CreateUniqueElementKey(string name, int lineNumber)
+        {
+            return string.Format("{0}_Line{1}", name, lineNumber);
+        }
+
+        private string ParseHtml(string text, List<HtmlElement> elementList, TextDocument txtDoc)
         {
             int pointer = 0;
             var startTagIndex = 0;
             var endTagIndex = 0;
 
-            while (text.Contains("; ")) //style tag i içerisindeki boşluklar trim ediliyor. alttaki split'i bozmasın diye
+            while (text.Contains("; ") || text.Contains(": ")) //style tag i içerisindeki boşluklar trim ediliyor. alttaki split'i bozmasın diye
             {
-                text = text.Replace("; ", ";");
+                text = text.Replace("; ", ";").Replace(": ", ":");
             }
 
-            while (pointer < text.Length || startTagIndex == -1 || endTagIndex == -1)
+            startTagIndex = text.IndexOf('<', pointer);
+            endTagIndex = text.IndexOf('>', pointer);
+
+            try
             {
-                startTagIndex = text.IndexOf('<', pointer);
-                endTagIndex = text.IndexOf('>', pointer);
-                var elementText = text.Substring(startTagIndex + 1, (endTagIndex - (startTagIndex + 1)));
-
-                if (elementText.Contains("style"))
+                while (pointer < text.Length && startTagIndex != -1 || endTagIndex != -1)
                 {
-                    var parsedElement = elementText.Split(' ');
+                    //txtDoc.Selection.MoveToPoint();
 
-                    var elementName = parsedElement[0];
-                    var elementId = string.Empty;
-                    var elementStyle = string.Empty;
-                    var guid = Guid.NewGuid().ToString();
+                    var elementText = text.Substring(startTagIndex + 1, (endTagIndex - (startTagIndex + 1)));
 
-                    var idAttr = parsedElement.FirstOrDefault(q => q.Contains("id"));
-                    if (idAttr != null)
+                    if (elementText.Contains("style=")) // '=' is very important
                     {
-                        elementId = idAttr.Replace("id=", string.Empty).Replace("\"", string.Empty);
+                        var parsedElement = elementText.Split(' ');
+                        var elementName = parsedElement[0];
+                        var elementId = string.Empty;
+                        var elementStyle = string.Empty;
+                        var elementClass = string.Empty;
+                        var guid = Guid.NewGuid().ToString();
+
+                        #region checking id attr
+
+                        var idAttr = parsedElement.FirstOrDefault(q => q.Contains("id"));
+                        if (idAttr != null)
+                        {
+                            elementId = idAttr.Replace("id=", string.Empty).Replace("\"", string.Empty);
+                        }
+                        #endregion
+
+                        #region checking style attr
+
+                        var styleAttr = parsedElement.FirstOrDefault(q => q.Contains("style"));
+                        if (styleAttr != null)
+                        {
+                            elementStyle = styleAttr.Replace("style=", string.Empty).Replace("\"", string.Empty);
+                        }
+                        #endregion
+
+                        #region checking class attr
+
+                        var classAttr = parsedElement.FirstOrDefault(q => q.Contains("class"));
+                        if (classAttr != null)
+                        {
+                            elementClass = classAttr.Replace("class=", string.Empty).Replace("\"", string.Empty);
+                        }
+
+                        #endregion
+
+                        elementList.Add(new HtmlElement
+                        {
+                            Id = elementId,
+                            Name = elementName,
+                            Style = elementStyle,
+                            Class = elementClass,
+                            Guid = guid,
+                            LineNumber = txtDoc.Selection.CurrentLine
+                        });
+
+                        text = text.Replace(elementText, guid);
+                        pointer = text.IndexOf('>', text.IndexOf(guid)) + 1;
+                    }
+                    else
+                    {
+                        pointer = endTagIndex + 1;
                     }
 
-                    var styleAttr = parsedElement.FirstOrDefault(q => q.Contains("style"));
-                    if (styleAttr != null)
-                    {
-                        elementStyle = styleAttr.Replace("style=", string.Empty).Replace("\"", string.Empty);
-                    }
-
-                    list.Add(new HtmlElement
-                    {
-                        Id = elementId,
-                        Name = elementName,
-                        Style = elementStyle,
-                        Guid = guid
-                    });
-
-                    text = text.Replace(elementText, guid);
-                    pointer = text.IndexOf('>', text.IndexOf(guid)) + 1;
+                    startTagIndex = text.IndexOf('<', pointer);
+                    endTagIndex = text.IndexOf('>', pointer);
                 }
-                else
-                {
-                    pointer = endTagIndex + 1;
-                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
             return text;
-        }
-
-        public class HtmlElement
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-            public string Style { get; set; }
-            public string Guid { get; set; }
         }
     }
 }
