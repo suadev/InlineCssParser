@@ -57,6 +57,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="CommandPackage.cs" />
     <Compile Include="HtmlElement.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

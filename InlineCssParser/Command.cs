@@ -17,6 +17,7 @@ namespace InlineCssParser
         /// Command ID.
         /// </summary>
         public const int CommandId = 0x0100;
+        private Parser _parser;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -41,6 +42,7 @@ namespace InlineCssParser
             }
 
             this.package = package;
+            _parser = new Parser();
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
@@ -94,12 +96,10 @@ namespace InlineCssParser
             TextDocument txtDoc = doc.Object() as TextDocument;
             var text = txtDoc.CreateEditPoint(txtDoc.StartPoint).GetText(txtDoc.EndPoint);
 
-
-
             if (txtDoc.Language == "HTMLX" || txtDoc.Language == "HTML")
             {
                 var elementList = new List<HtmlElement>();
-                var parsed = ParseHtml(text, elementList, txtDoc);
+                var parsed = _parser.ParseHtml(text, elementList, txtDoc);
                 var cssFileContent = string.Empty;
 
                 if (elementList.Any())
@@ -107,13 +107,10 @@ namespace InlineCssParser
                     foreach (var item in elementList)
                     {
                         var cssClass = string.IsNullOrEmpty(item.Class) ? (string.IsNullOrEmpty(item.Id) ? CreateUniqueElementKey(item.Name, item.LineNumber) : item.Id) : item.Class;
-
                         var idAttr = string.IsNullOrEmpty(item.Id) ? string.Empty : string.Format("id=\"{0}\"", item.Id);
-
                         var replaceText = string.Format("{0} {1} class=\"{2}\"", item.Name, idAttr, cssClass);
 
                         parsed = parsed.Replace(item.Guid, replaceText);
-
                         cssFileContent += string.Format(".{0}{{{1}}}\n\n", cssClass, "\n" + item.Style);
                     }
 
@@ -138,7 +135,7 @@ namespace InlineCssParser
                 }
                 else
                 {
-                    VsShellUtilities.ShowMessageBox(this.ServiceProvider, "Not found inline css!", "Oops!",
+                    VsShellUtilities.ShowMessageBox(this.ServiceProvider, "Not found inline css.", "That's Cool!",
                         OLEMSGICON.OLEMSGICON_INFO,
                         OLEMSGBUTTON.OLEMSGBUTTON_OK,
                         OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
@@ -155,95 +152,7 @@ namespace InlineCssParser
 
         private string CreateUniqueElementKey(string name, int lineNumber)
         {
-            return string.Format("{0}_Line{1}", name, lineNumber);
-        }
-
-        private string ParseHtml(string text, List<HtmlElement> elementList, TextDocument txtDoc)
-        {
-            int pointer = 0;
-            var startTagIndex = 0;
-            var endTagIndex = 0;
-
-            while (text.Contains("; ") || text.Contains(": ")) //style tag i içerisindeki boşluklar trim ediliyor. alttaki split'i bozmasın diye
-            {
-                text = text.Replace("; ", ";").Replace(": ", ":");
-            }
-
-            startTagIndex = text.IndexOf('<', pointer);
-            endTagIndex = text.IndexOf('>', pointer);
-
-            try
-            {
-                while (pointer < text.Length && startTagIndex != -1 || endTagIndex != -1)
-                {
-                    //txtDoc.Selection.MoveToPoint();
-
-                    var elementText = text.Substring(startTagIndex + 1, (endTagIndex - (startTagIndex + 1)));
-
-                    if (elementText.Contains("style=")) // '=' is very important
-                    {
-                        var parsedElement = elementText.Split(' ');
-                        var elementName = parsedElement[0];
-                        var elementId = string.Empty;
-                        var elementStyle = string.Empty;
-                        var elementClass = string.Empty;
-                        var guid = Guid.NewGuid().ToString();
-
-                        #region checking id attr
-
-                        var idAttr = parsedElement.FirstOrDefault(q => q.Contains("id"));
-                        if (idAttr != null)
-                        {
-                            elementId = idAttr.Replace("id=", string.Empty).Replace("\"", string.Empty);
-                        }
-                        #endregion
-
-                        #region checking style attr
-
-                        var styleAttr = parsedElement.FirstOrDefault(q => q.Contains("style"));
-                        if (styleAttr != null)
-                        {
-                            elementStyle = styleAttr.Replace("style=", string.Empty).Replace("\"", string.Empty);
-                        }
-                        #endregion
-
-                        #region checking class attr
-
-                        var classAttr = parsedElement.FirstOrDefault(q => q.Contains("class"));
-                        if (classAttr != null)
-                        {
-                            elementClass = classAttr.Replace("class=", string.Empty).Replace("\"", string.Empty);
-                        }
-
-                        #endregion
-
-                        elementList.Add(new HtmlElement
-                        {
-                            Id = elementId,
-                            Name = elementName,
-                            Style = elementStyle,
-                            Class = elementClass,
-                            Guid = guid,
-                            LineNumber = txtDoc.Selection.CurrentLine
-                        });
-
-                        text = text.Replace(elementText, guid);
-                        pointer = text.IndexOf('>', text.IndexOf(guid)) + 1;
-                    }
-                    else
-                    {
-                        pointer = endTagIndex + 1;
-                    }
-
-                    startTagIndex = text.IndexOf('<', pointer);
-                    endTagIndex = text.IndexOf('>', pointer);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            return text;
+            return string.Format("{0}_Line_{1}", name, lineNumber);
         }
     }
 }
