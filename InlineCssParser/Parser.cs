@@ -42,7 +42,7 @@ namespace InlineCssParser
 
                         #region checking id attr
 
-                        var idAttr = parsedElement.FirstOrDefault(q => q.Contains("id"));
+                        var idAttr = parsedElement.FirstOrDefault(q => q.Contains("id="));
                         if (idAttr != null)
                         {
                             elementId = idAttr.Replace("id=", string.Empty).Replace("\"", string.Empty);
@@ -51,7 +51,7 @@ namespace InlineCssParser
 
                         #region checking style attr
 
-                        var styleAttr = parsedElement.FirstOrDefault(q => q.Contains("style"));
+                        var styleAttr = parsedElement.FirstOrDefault(q => q.Contains("style="));
                         if (styleAttr != null)
                         {
                             elementStyle = styleAttr.Replace("style=", string.Empty).Replace("\"", string.Empty);
@@ -60,7 +60,7 @@ namespace InlineCssParser
 
                         #region checking class attr
 
-                        var classAttr = parsedElement.FirstOrDefault(q => q.Contains("class"));
+                        var classAttr = parsedElement.FirstOrDefault(q => q.Contains("class="));
                         if (classAttr != null)
                         {
                             elementClass = classAttr.Replace("class=", string.Empty).Replace("\"", string.Empty);
