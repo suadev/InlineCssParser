@@ -54,9 +54,9 @@
           If you do not want an image next to your command, remove the Icon node /> -->
       <Button guid="guidCommandPackageCmdSet" id="CommandId" priority="0x0100" type="Button">
         <Parent guid="guidCommandPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPicSearch" />
+        <Icon guid="myIcon" id="myIcon1" />
         <Strings>
-          <ButtonText>Unbundle Inline Styles!</ButtonText>
+          <ButtonText>Extract Inline Styles!</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -68,6 +68,8 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
+      
+      <Bitmap guid="myIcon" href="Resources\menu.png" usedList="myIcon1"/>  
       <Bitmap guid="guidImages" href="Resources\Command.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
     </Bitmaps>
   </Commands>
@@ -87,6 +89,10 @@
       <IDSymbol name="CommandId" value="0x0100" />
     </GuidSymbol>
 
+    <GuidSymbol name="myIcon" value="{4CC88B1D-BE04-46E7-A457-EC2E699AFB9F}">
+      <IDSymbol name="myIcon1" value="1" />
+    </GuidSymbol>
+
     <GuidSymbol name="guidImages" value="{a17d6f1d-137b-4fe5-a4a6-0babcc7ece04}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
@@ -94,6 +100,7 @@
       <IDSymbol name="bmpPicX" value="4" />
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
+
     </GuidSymbol>
   </Symbols>
 </CommandTable>

@@ -18,6 +18,20 @@ namespace InlineCssParser
         /// </summary>
         public const int CommandId = 0x0100;
         private Parser _parser;
+        private IVsStatusbar bar;
+
+        private IVsStatusbar StatusBar
+        {
+            get
+            {
+                if (bar == null)
+                {
+                    bar = this.ServiceProvider.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                }
+
+                return bar;
+            }
+        }
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -96,10 +110,14 @@ namespace InlineCssParser
             TextDocument txtDoc = doc.Object() as TextDocument;
             var text = txtDoc.CreateEditPoint(txtDoc.StartPoint).GetText(txtDoc.EndPoint);
 
+            uint cookie = 0;
+            StatusBar.Progress(ref cookie, 1, string.Empty, 0, 0);
+
+
             if (txtDoc.Language == "HTMLX" || txtDoc.Language == "HTML")
             {
                 var elementList = new List<HtmlElement>();
-                var parsed = _parser.ParseHtml(text, elementList, txtDoc);
+                var parsed = _parser.ParseHtml(text, elementList, txtDoc, StatusBar, ref cookie);
                 var cssFileContent = string.Empty;
 
                 if (elementList.Any())
@@ -148,6 +166,11 @@ namespace InlineCssParser
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
+
+            // Clear the progress bar.
+            StatusBar.Progress(ref cookie, 0, string.Empty, 0, 0);
+            StatusBar.FreezeOutput(0);
+            StatusBar.Clear();
         }
 
         private string CreateUniqueElementKey(string name, int lineNumber)

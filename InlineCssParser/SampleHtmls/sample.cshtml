@@ -1,0 +1,70 @@
+﻿@using Ninja.Core.Models
+@{
+    ViewBag.Title = "Pricing";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="container-fluid" style="font-size:12px !important; background-color:red;">
+
+    <div class="col-xs-12 col-sm-3">
+        <h3>
+            <strong>Kullanılan Costlar</strong>
+        </h3>
+
+        <div class="form-group form-group-lg" style="margin-left:15px; margin-left: 0;">
+            <div id="UsedCostGrid"> </div>
+        </div>
+    </div>
+
+    <div id="SinglePricingResultsForm" class="col-xs-12 col-sm-3">
+        <h3>
+            <strong>Sonuçlar</strong>
+        </h3>
+        <div>
+            <div class="form-group form-group-lg">
+                <label>Maximum Standart İndirim</label>
+                <div id="MaxDiscountGrid"> </div>
+            </div>
+            <div class="form-group form-group-lg">
+                <label><strong><br /><br />Nihai Standart İndirim</strong></label>
+                <table class="finalDiscountRateTable">
+                    <tr>
+                        <td>
+                            İndirim Oranı (%)
+                        </td>
+                        <td>
+                            <input id="FinalDiscountRate" name="FinalDiscountRate" />
+                            <button id="btnSetFinalDiscountRate" class="k-button k-primary k-widget" data-bind="click: setFinalDiscountRateButtonCliked" disabled="true">Uygula</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            İndirimli Fiyat (TL/kwh)
+                        </td>
+                        <td>
+                            <input id="FinalUnitPrice" name="FinalUnitPrice" />
+                            <button id="btnSetFinalUnitPrice" class="k-button k-primary k-widget" data-bind="click: setFinalUnitPriceButtonClicked" disabled="true">Uygula</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    var s = document.getElementsByTagName('script')[0];
+    var sc = document.createElement('script');
+    sc.type = 'text/javascript';
+    sc.async = false;
+    sc.src = '/Views/Pricing/CommonPricing.js?v' + Math.random();
+    s.parentNode.insertBefore(sc, s);
+
+    var sc2 = document.createElement('script');
+    sc2.type = 'text/javascript';
+    sc2.async = false;
+    sc2.src = '/Views/Pricing/Single.js?v' + Math.random();
+    s.parentNode.insertBefore(sc2, s);
+</script>
+<link href="~/Content/pricing.css" rel="stylesheet" />
