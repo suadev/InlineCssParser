@@ -26,7 +26,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>InlineCssParser</RootNamespace>
     <AssemblyName>InlineCssParser</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
