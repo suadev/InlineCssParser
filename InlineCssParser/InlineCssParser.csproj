@@ -63,8 +63,14 @@
   <ItemGroup>
     <None Include="Key.snk" />
     <None Include="packages.config" />
-    <Content Include="Resources\logo.png" />
-    <Content Include="Resources\menu.png" />
+    <Content Include="Resources\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\menu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="SampleHtmls\sample.cshtml" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>

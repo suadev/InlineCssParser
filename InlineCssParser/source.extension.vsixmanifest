@@ -2,7 +2,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="InlineCssParser.Suat KÖSE.39aae44f-13c5-4fbe-a6a1-25653d68bc77" Version="1.0" Language="en-US" Publisher="Suat KÖSE" />
-    <DisplayName>Inline Style Parser for Html, Aspx and Cshtml Files</DisplayName>
+    <DisplayName>Inline Style Parser for Html Files</DisplayName>
     <Description>A Visual Studio Extension that helps to extract inline styles into a seperate css file.</Description>
     <Icon>Resources\logo.png</Icon>
     <PreviewImage>Resources\logo.png</PreviewImage>

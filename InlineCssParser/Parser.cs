@@ -14,10 +14,10 @@ namespace InlineCssParser
             var startTagIndex = 0;
             var endTagIndex = 0;
             var endTagBefore = 0;
-            uint complete = 0;
+            uint completed = 0;
             uint total = (uint)text.Count(q => q == '<');
 
-            while (text.Contains("; ") || text.Contains(": ")) //style tag i içerisindeki boşluklar trim ediliyor. alttaki split'i bozmasın diye
+            while (text.Contains("; ") || text.Contains(": ")) //to fix style tag content
             {
                 text = text.Replace("; ", ";").Replace(": ", ":");
             }
@@ -30,17 +30,19 @@ namespace InlineCssParser
                 txtDoc.Selection.StartOfDocument();
                 while (pointer < text.Length && startTagIndex != -1 || endTagIndex != -1)
                 {
-                    complete++;
-                    bar.Progress(ref cookie, 1, "", complete, total);
+                    completed++;
+                    bar.Progress(ref cookie, 1, string.Empty, completed, total);
                     bar.SetText("Extracting inline styles ...");
 
-                    //current line ı bulabilmek için cursoru dolastırıyoruz. text üzerinde bir değişiklik yapılmıyor
+                    #region to find current line (txtDoc.Selection.CurrentLine)
+
                     txtDoc.Selection.CharRight(false, endTagIndex - endTagBefore);
                     endTagBefore = endTagIndex;
 
-                    var elementText = text.Substring(startTagIndex + 1, (endTagIndex - (startTagIndex + 1)));
+                    #endregion
 
-                    if (elementText.Contains("style=")) // '=' is very important
+                    var elementText = text.Substring(startTagIndex + 1, (endTagIndex - (startTagIndex + 1)));
+                    if (elementText.Contains("style=")) // '=' is really necessary
                     {
                         var parsedElement = elementText.Split(' ');
                         var elementName = parsedElement[0];
@@ -77,10 +79,15 @@ namespace InlineCssParser
 
                         #region checking class attr
 
-                        var classAttr = parsedElement.FirstOrDefault(q => q.Contains("class="));
-                        if (classAttr != null)
+                        var classAttr = parsedElement.Any(q => q.Contains("class="));
+                        if (classAttr)
                         {
-                            elementClass = classAttr.Replace("class=", string.Empty).Replace("\"", string.Empty);
+                            //one class or more?
+                            var classStart = elementText.IndexOf("\"", elementText.IndexOf("class"));
+                            var classEnd = elementText.IndexOf("\"", classStart + 1);
+                            var classText = elementText.Substring(classStart, (classEnd - classStart));
+                            classText = classText.Replace(" ", " ."); // "class1 class2" - > "class1 .class2"
+                            elementClass = classText.Replace("\"", string.Empty);
                         }
 
                         #endregion

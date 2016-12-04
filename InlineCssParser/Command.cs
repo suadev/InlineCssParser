@@ -109,39 +109,49 @@ namespace InlineCssParser
             Document doc = dte.ActiveDocument;
             TextDocument txtDoc = doc.Object() as TextDocument;
             var text = txtDoc.CreateEditPoint(txtDoc.StartPoint).GetText(txtDoc.EndPoint);
+            text = text.Replace("\r", "");
 
             uint cookie = 0;
             StatusBar.Progress(ref cookie, 1, string.Empty, 0, 0);
 
-
             if (txtDoc.Language == "HTMLX" || txtDoc.Language == "HTML")
             {
+                var html = text;
                 var elementList = new List<HtmlElement>();
-                var parsed = _parser.ParseHtml(text, elementList, txtDoc, StatusBar, ref cookie);
+                var parsed = _parser.ParseHtml(html, elementList, txtDoc, StatusBar, ref cookie);
                 var cssFileContent = string.Empty;
 
                 if (elementList.Any())
                 {
                     foreach (var item in elementList)
                     {
-                        var cssClass = string.IsNullOrEmpty(item.Class) ? (string.IsNullOrEmpty(item.Id) ? CreateUniqueElementKey(item.Name, item.LineNumber) : item.Id) : item.Class;
+                        var cssClass = string.Empty;
+                        if (string.IsNullOrEmpty(item.Class))
+                        {
+                            cssClass = string.IsNullOrEmpty(item.Id) ? CreateUniqueElementKey(item.Name, item.LineNumber) : item.Id;
+                        }
+                        else
+                        {
+                            cssClass = string.Format(".{0} .{1}", item.Class, CreateUniqueElementKey(item.Name, item.LineNumber));
+                        }
+
                         var idAttr = string.IsNullOrEmpty(item.Id) ? string.Empty : string.Format("id=\"{0}\"", item.Id);
-                        var replaceText = string.Format("{0} {1} class=\"{2}\"", item.Name, idAttr, cssClass);
+                        var replaceText = string.Format("{0} {1} class=\"{2}\"", item.Name, idAttr, cssClass.Replace(".", string.Empty));
 
                         parsed = parsed.Replace(item.Guid, replaceText);
-                        cssFileContent += string.Format(".{0}{{{1}}}\n\n", cssClass, "\n" + item.Style);
+                        cssFileContent += string.Format("{0}{{{1}}}\n\n", cssClass, "\n" + item.Style);
                     }
 
                     //css file beautification
                     cssFileContent = cssFileContent.Replace(";", ";\n");
 
-                    //existing html file
+                    //update html file
                     TextSelection txtSelHtml = (TextSelection)doc.Selection;
                     txtSelHtml.SelectAll();
                     txtSelHtml.Delete();
                     txtSelHtml.Insert(parsed);
 
-                    //newly created css file
+                    //create css file
                     var docName = doc.Name.Substring(0, doc.Name.IndexOf('.'));
                     docName = string.Format("{0}.css", docName);
                     string solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
@@ -154,17 +164,13 @@ namespace InlineCssParser
                 else
                 {
                     VsShellUtilities.ShowMessageBox(this.ServiceProvider, "Not found inline css.", "That's Cool!",
-                        OLEMSGICON.OLEMSGICON_INFO,
-                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                        OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
                 }
             }
             else
             {
                 VsShellUtilities.ShowMessageBox(this.ServiceProvider, "This is not a html file!", "Oops!",
-                    OLEMSGICON.OLEMSGICON_WARNING,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                    OLEMSGICON.OLEMSGICON_WARNING, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
 
             // Clear the progress bar.
@@ -175,7 +181,7 @@ namespace InlineCssParser
 
         private string CreateUniqueElementKey(string name, int lineNumber)
         {
-            return string.Format("{0}_Line_{1}", name, lineNumber);
+            return string.Format("{0}_line_{1}", name, lineNumber);
         }
     }
 }
