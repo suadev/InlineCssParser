@@ -128,7 +128,7 @@ namespace InlineCssParser
                         var cssClass = string.Empty;
                         if (string.IsNullOrEmpty(item.Class))
                         {
-                            cssClass = string.IsNullOrEmpty(item.Id) ? CreateUniqueElementKey(item.Name, item.LineNumber) : item.Id;
+                            cssClass = string.Format(".{0}", string.IsNullOrEmpty(item.Id) ? CreateUniqueElementKey(item.Name, item.LineNumber) : item.Id);
                         }
                         else
                         {
