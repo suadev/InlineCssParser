@@ -64,6 +64,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SampleHtmls\sample2.css" />
+    <Content Include="SampleHtmls\sample2.html" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <Content Include="Resources\logo.png">

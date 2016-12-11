@@ -22,6 +22,7 @@ namespace InlineCssParser
                 text = text.Replace("; ", ";").Replace(": ", ":");
             }
 
+            text = text.Replace("STYLE", "style");
             startTagIndex = text.IndexOf('<', pointer);
             endTagIndex = text.IndexOf('>', pointer);
 
@@ -62,19 +63,15 @@ namespace InlineCssParser
 
                         #region checking style attr
 
-                        var styleAttr = parsedElement.FirstOrDefault(q => q.Contains("style="));
-                        if (styleAttr != null)
+                        if (parsedElement.Any(q => q.Contains("style=")))
                         {
-                            elementStyle = styleAttr.Replace("style=", string.Empty).Replace("\"", string.Empty);
+                            var styleStart = elementText.IndexOf("\"", elementText.IndexOf("style=")) + 1;
+                            var styleEnd = elementText.IndexOf("\"", styleStart);
+                            elementStyle = elementText.Substring(styleStart, (styleEnd - styleStart));
                         }
-                        #endregion
 
-                        #region check important style
-                        var importantAttr = parsedElement.FirstOrDefault(q => q.Contains("!important"));
-                        if (importantAttr != null)
-                        {
-                            elementStyle += string.Format(" {0}", importantAttr.Replace("\"", string.Empty).Trim());
-                        }
+                        elementStyle = elementStyle.EndsWith(";") ? elementStyle : string.Format("{0};", elementStyle);
+
                         #endregion
 
                         #region checking class attr
