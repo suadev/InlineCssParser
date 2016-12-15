@@ -2,9 +2,9 @@
 
 <p><span>A Visual Studio Extension that helps to extract inline styles into a seperate css file.&nbsp;</span></p>
 
-Available on Visual Studio Gallery 
+Available on Visual Studio Marketplace 
 
-https://visualstudiogallery.msdn.microsoft.com/bd73487c-7489-4e15-a31e-8f6f53820f45?redir=0
+https://marketplace.visualstudio.com/items?itemName=SuatKOSE.InlineStyleParserforHtmlFiles
 
 <p>Supporting .html and .cshtml files for now.</p>
 <p>Just right click on a html file source code and extract your all inline styles into a seperate css file. See the attached screenshot below.</p>
