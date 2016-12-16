@@ -17,10 +17,12 @@ namespace InlineCssParser
             uint completed = 0;
             uint total = (uint)text.Count(q => q == '<');
 
+            #region trimming style tags contens
             while (text.Contains("; ") || text.Contains(": ")) //to fix style tag content
             {
                 text = text.Replace("; ", ";").Replace(": ", ":");
             }
+            #endregion
 
             text = text.Replace("STYLE", "style");
             startTagIndex = text.IndexOf('<', pointer);
@@ -111,9 +113,13 @@ namespace InlineCssParser
                     endTagIndex = text.IndexOf('>', pointer);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw;
+                // Clear the progress bar.
+                bar.Progress(ref cookie, 0, string.Empty, 0, 0);
+                bar.FreezeOutput(0);
+                bar.Clear();
+                //throw;
             }
             return text;
         }

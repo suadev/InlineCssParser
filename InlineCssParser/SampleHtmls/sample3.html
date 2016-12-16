@@ -1,0 +1,204 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>How to Use Inline, Embedded, and External CSS</title>
+    <link rel="stylesheet" href="css/sitewide.css" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="description" content="This tutorial explains how to use inline, embedded, and external cascading style sheets in your web pages.">
+    <meta name="keywords" content="How CSS is used, coding css">
+    <meta name="robots" content="index, follow">
+</head>
+<body>
+
+    <table border="0" cellspacing="0" cellpadding="0" style="width: 954px; height: 177px;">
+        <tr>
+            <td rowspan="1" colspan="1" width="151" height="177"><img border="0" width="151" height="177" src="images/mast1.JPG" alt="html tutorials"></td>
+            <td rowspan="1" colspan="1" width="194" height="177"><img border="0" width="194" height="177" src="images/mast2.JPG" alt="web design help"></td>
+            <td rowspan="1" colspan="1" width="151" height="177"><img border="0" width="151" height="177" src="images/mast3.JPG" alt="css tutorials"></td>
+            <td rowspan="1" colspan="1" width="246" height="177"><img border="0" width="246" height="177" src="images/mast4.JPG" alt="free web graphics"></td>
+            <td rowspan="1" colspan="1" width="125" height="177" style="background-image: url(images/mast5.JPG);" class="deal">
+                <script type="text/javascript" src="js/daily.js"></script>
+            </td>
+            <td rowspan="1" colspan="1" width="87" height="177"><img border="0" width="87" height="177" src="images/mast6.JPG" alt="diy search engine optimization"></td>
+        </tr>
+    </table>
+
+    <table style="background-image: url(images/navbg.jpg); height: 27px; width: 898px; margin-left: 48px; border: 2px solid black; border-bottom: none;">
+        <tr>
+            <td class="navbar">
+                <a href="index.html">Home</a> |
+                <a href="html_tutorials.html">Web Design Tutorials</a> |
+                <a href="free_graphics.html">Free Graphics</a> |
+                <a href="custom-graphics.html">Custom Graphics</a> |
+                <a href="news.html">Newsletter</a> |
+                <a href="products.html">Products</a> |
+                <a href="specials.html">Specials</a> |
+                <a href="search-engine-optimization.html">SEO</a> |
+                <a href="sound_effects.html">Sound Effects</a> |
+                <a href="InnerCircle.html">Benefits</a> |
+                <a href="login.html">Login</a> |
+                <a href="http://ww11.aitsafe.com/cf/review.cfm?userid=D764009" target="_blank">View Cart</a>
+            </td>
+        </tr>
+    </table>
+
+    <table class="main" cellspacing="0" cellpadding="0" width="898">
+        <tr>
+            <td style="width: 580px; padding-right: 17px; border-right: 1px dotted #948E76;">
+
+
+                <h1>How to Use Inline, Embedded, and External CSS</h1>
+
+                As explained in the previous two parts of this tutorial series, there are three ways to implement CSS in your web design. The how-to of it is explained below. Any and all methods can be used on a web page, but there are "best use" practices that, if you follow them, will prove to be the most efficient for you. These best uses are as follows:
+
+                <dl>
+                    <dt>Inline Styles</dt>
+                    <dd>Inline styles are best used sparingly. Use them where you want to override a style coded into your external or embedded styles. Also use them when you want a quick change where the style isn't going to be needed often.</dd>
+
+                    <dt>Embedded Styles</dt>
+                    <dd>Embedded styles are best used where you will be using the styles repeatedly on one page, but those styles aren't needed for most of your site.</dd>
+
+                    <dt>External Styles</dt>
+                    <dd>External styles are best used to define styles that will be used repeatedly across many pages of your web site. This allows you to make a change to the external style sheet and have that change reflected on all the pages that draw their styles from it.
+                </dl>
+
+                Following those guidelines will help you make the most of using CSS. Here's how each of those styles are implemented:
+
+                <h2 style="padding-left: 5px; background-color: #c6c8b9; border-top: 1px solid black; border-left: 1px solid black;">Inline Styles</h2>
+
+                Using inline CSS is very much like coding an attribute and value into an HTML tag. Here's an example of an inline style rule.
+<pre>
+&lt;pre style="color: red; margin-left: 17px;"&gt;
+</pre>
+                The above style rule is the same style I used to show code examples, only I don't use it inline (so I don't have to repeat it each time I want to show a code example). It's a simple &lt;pre&gt; tag with a style rule added. To cancel that style rule, use the &lt;/pre&gt; just as you know from standard HTML.
+                <p>
+                    Using inline CSS only affects the HTML element that it's coded into. If you wanted to repeat that style at another place on your page, you'd have to code that style into each use of the element, in this case, another &lt;pre&gt; tag.
+                </p><p>
+                    There are a multitude of different things you can do with CSS, it's just a matter of learning what the options are and how to code them. I have 31 different HTML and CSS reference charts in my <a href="InnerCircle.html">members area</a> and demonstrate dozens of different CSS uses there. It's the one place where it's all put together for you in plain English.
+                </p>
+
+                <h2 style="padding-left: 5px; background-color: #c6c8b9; border-top: 1px solid black; border-left: 1px solid black;">Embedded Styles</h2>
+
+                Embedded styles are placed in the HEAD section of a web page, placed between style declaration opening and closing tags. Unlike inline style rules where you have to code a style into each HTML element, embedded rules affect every usage of an HTML element on the page where it's embedded. Here's a example:
+<pre>
+&lt;style type="text/css"&gt;
+div {font-family: Arial; font-size: 14px; margin-left: 30px;}
+p &nbsp; {border-left: 1px dotted gray;}
+&lt;/style&gt;
+</pre>
+                If the above style rules were placed in the HEAD section of a web page's source code, here's how it would affect the page display:
+
+                <ul>
+                    <li>Each time you used a division tag (&lt;div&gt;) on the page the text within that division would be shown in the Arial font at 14 pixels high. The division would also have a margin of 30 pixels on the left side. Using the <i>margin-left</i> property is how I indent code examples.</li>
+                    <li>Each time you used a paragraph tag (&lt;p&gt;) there would be a 1 pixel thick dotted gray line on the left side of the paragraph space.</li>
+                </ul>
+
+                You probably noticed that the formatting of style rules differs from HTML. Good job! Let's look a little closer at that.
+                <p>
+                    As you know, HTML elements are enclosed between the &lt; and &gt; brackets. Confusion would abound for webmasters and browser programmers alike if CSS also used arrow brackets. Therefore, the opening &lt;style type="text/css"&gt; and closing &lt;/style&gt; tags identify the code in between as CSS code.
+                </p><p>
+                    The selector (the HTML element you wish to create a rule for) is listed without any brackets since it's already enclosed between the opening and closing style declaration. The selector is then followed by curly braces { ... } that enclose the property and value, which is the rule for the chosen selector.
+                </p><p>
+                    The property and value are separated by a colon and space. Example:
+                </p><pre>
+color: red;
+</pre>
+
+                The semi-colon signals the end of a rule. Because each selector can have more than one rule, the semi-colon also serves as a rules separator. Example:
+<pre>
+color: red; background-color: black; font-size: 18px;
+</pre>
+
+                You should always include the semi-colon after a rule, even if you're only creating one rule. Truth is, a single rule will work most of the time if you forget the semi-colon, but results can be unpredictable in some instances. It's also a good habit. If you always include the semi-colon for single rules, there's less of a chance you'll leave one out where it's needed as a rules separator when you create multiple rules for one selector.
+
+                <h2 style="padding-left: 5px; background-color: #c6c8b9; border-top: 1px solid black; border-left: 1px solid black;">External Styles</h2>
+
+                An external style sheet contains the style rules you create, saved in a plain text file, but with a <b>.css</b> file extension instead of a <b>.txt</b> file extension. To save a file with a .css extention, in most text editors you can simply place quotation marks around your file name as you save it. Example:
+<pre>
+"MyStyles.css"
+</pre>
+                The contents of your linked style sheet is the same as you would place in an embedded style, minus the opening &lt;style type="text/css"&gt; and closing &lt;/style&gt; tags. These are not needed because the browser knows it's a style sheet from the link to the style sheet.
+                <p>
+                    To link to a style sheet, place the following line of code in the HEAD section of your page:
+                </p><pre>
+&lt;link rel="stylesheet" href="css/sitewide.css" type="text/css" /&gt;
+</pre>
+                There is no closing tag for this link. To make the code XHTML compliant, I closed the tag with a space and forward slash just before the right arrow bracket. You needn't do that if you don't care if your pages are XHTML compliant.
+                <p>
+                    Where I have <b>css/sitewide.css</b>, you'd change that to reflect the path to and name of your own style sheet. To see a real example of a simple external style sheet, try this one saved as a <a href="misc/SampleStyle.txt" target="_blank">text file</a>. You could save that file with a .css extension and link to it, and it would control the HTML elements that have rules created for them on all the pages you link to it from.
+                </p>
+
+                <p>
+                    This tutorial <a href="CSS_4.html">continues</a>...
+                </p>
+
+
+                <div style="text-align: center; margin-top: 17px;">
+                    <a href="#" onClick="history.go(-1);return true;">Back</a> |
+                    <a href="html_tutorials.html">Web Design Tutorials Index</a>
+                </div>
+
+
+            </td>
+            <td width="318" class="smalltext" style="padding-left: 17px; border-left: 1px dotted #948E76;">
+
+                <div style="margin-top: 17px; margin-bottom: 17px;">
+
+                    <p style="margin: 27px 0;">
+                        <a href="news.html">
+                            <img src="images/aanAd.jpg" style="width: 300px; height: 400px; border: none;" alt="Ezine for Webmasters">
+                        </a>
+                    </p>
+
+                    <!-- AddThis Button BEGIN -->
+                    <script type="text/javascript">var addthis_pub="boogiejack";</script>
+                    <a href="http://www.addthis.com/bookmark.php?v=20" onmouseover="return addthis_open(this, '', '[URL]', '[TITLE]')" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img src="http://s7.addthis.com/static/btn/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0" /></a>
+                    <script type="text/javascript" src="http://s7.addthis.com/js/200/addthis_widget.js"></script><!-- AddThis Button END -->
+                    </p>
+                </div>
+
+                <h3 style="background-image: url(images/headline.jpg); font-size: 14px; height: 39px; padding-top: 10px; padding-left: 57px; margin-bottom: 10px;">Almost a Newsletter</h3>
+
+                <div style="margin-top: 23px; text-align: center;">
+                    <script type="text/javascript"
+                            src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                    </script>
+                </div>
+
+                <h3 style="background-image: url(images/headline.jpg); font-size: 14px; height: 39px; padding-top: 10px; padding-left: 57px; margin-bottom: 10px;">Did you know...</h3>
+                The member's site has about 100 standards compliant HTML and CSS tutorials, 31 handy reference charts,  reprintable content, web graphics, exclusive fonts, free software, free ebooks and more? All this for less than 9 cents a day! [ <a href="InnerCircle.html">Details</a> ]
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="footer">
+
+                <a href="index.html">Home</a> | <a href="html_tutorials.html">Web Design Tutorials</a> | <a href="free_graphics.html">Free Graphics</a> | <a href="news.html">Newsletter</a> | <a href="products.html">Products</a> | <a href="specials.html">Specials</a> | <a href="search_engines.html">SEO</a> | <a href="sound_effects.html">Sound Effects</a> | <a href="press.html">Press Room</a>
+                <br />
+                <a href="sitemap.html">Sitemap</a> |
+                <a href="InnerCircle.html">Member Perks</a> | <a href="login.html">Member Login</a> |
+                <a href="about.html">About BoogieJack.com</a> | <a href="contact.html">Contact</a> | <a href="privacy.html">Privacy Policy</a> | <a href="copyright.html">Copyright Policy</a> | <a href="links.html">Links</a>
+                </p><p style="color: #777777; font-weight: bold;">
+                    <script type="text/javascript">
+
+	var Today 	= new Date();
+	var ThisYear 	= Today.getFullYear();
+	var DayName = Today.getDate();
+	document.write("Copyright BoogieJack.com 1997 - " + ThisYear);
+
+                    </script>
+                </p>
+                <p>
+                    <a rel="author" href="https://profiles.google.com/116660722057229871668#116660722057229871668/about">
+                        <img src="http://ssl.gstatic.com/images/icons/gplus-16.png" width="16" height="16">
+                    </a>
+                </p>
+
+            </td>
+        </tr>
+    </table>
+    <img src="images/tabbot.gif" width="955" height="29" alt="See my fancy bottom! :)" />
+</body>
+
+</html>
