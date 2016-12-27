@@ -64,6 +64,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SampleHtmls\Default.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="SampleHtmls\sample3.html" />
     <Content Include="SampleHtmls\sample2.css" />
     <Content Include="SampleHtmls\sample2.html" />
