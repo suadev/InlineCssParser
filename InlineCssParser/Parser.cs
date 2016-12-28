@@ -94,6 +94,10 @@ namespace InlineCssParser
                         text = text.Replace(elementText, guid);
                         pointer = text.IndexOf('>', text.IndexOf(guid)) + 1;
 
+                        endTagBefore = endTagBefore + (guid.Length - elementText.Length);
+
+                        //burada entagbefore u revize etmek lazım sanırım. guid.lengt- elementtext.length kadar ekleme yapılabilir
+
                         elementList.Add(new HtmlElement
                         {
                             Id = elementId,
