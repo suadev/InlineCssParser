@@ -6,11 +6,22 @@ Available on Visual Studio Marketplace
 
 https://marketplace.visualstudio.com/items?itemName=SuatKOSE.InlineStyleParserforHtmlFiles
 
-<p>Supporting .html and .cshtml files for now.</p>
-<p>Just right click on a html file source code and extract your all inline styles into a seperate css file. See the attached screenshot below.</p>
-<p>I am planning to add html beautification feature on following days.</p>
-<p>Please let me know if you realize that something is wrong about it.</p>
-<p>Thank you.</p>
+1.0.2 change log:
+
+- .aspx file support
+
+- Element line number bug fixed
+
+
+Supporting .html, .aspx and .cshtml file formats.
+
+Just right click on a html file source code and extract all inline styles into a seperate css file. See the attached screenshots below.
+
+I am planning to add html beautification feature on following days.
+
+Please let me know if you realize that something is wrong.
+
+Thank you.
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p><span style="font-size:small"><strong><span style="background-color:#ffffff">1-Sample Html</span></strong></span></p>
