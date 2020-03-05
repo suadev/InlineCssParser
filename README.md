@@ -6,7 +6,14 @@ Available on Visual Studio Marketplace
 
 https://marketplace.visualstudio.com/items?itemName=SuatKOSE.InlineStyleParserforHtmlFiles
 
-1.0.2 change log:
+# Change Log
+
+1.0.3
+
+- VS 2019 support
+- Upgraded to .Net 4.7
+
+1.0.2 
 
 - .aspx file support
 
