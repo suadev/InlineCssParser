@@ -1,13 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26127.3
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CDC1B591-80B2-466F-B2E3-B07F23D47D8B}"
-	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InlineCssParser", "InlineCssParser\InlineCssParser.csproj", "{78FFA5A2-A4C2-4DA6-B2AC-C859C8979B61}"
 EndProject
 Global
@@ -23,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A1DFBC55-0DC5-4194-8B1D-C8F5770329BF}
 	EndGlobalSection
 EndGlobal

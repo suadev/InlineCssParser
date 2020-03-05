@@ -1,7 +1,5 @@
 # Inline Style Parser for Html Files 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/yuel8urv1okjs91i?svg=true)](https://ci.appveyor.com/project/suadev/inlinecssparser)
-
 <p><span>A Visual Studio Extension that helps to extract inline styles into a separate css file.&nbsp;</span></p>
 
 Available on Visual Studio Marketplace 
@@ -24,7 +22,6 @@ I am planning to add html beautification feature on following days.
 Please let me know if you realize that something is wrong.
 
 Thank you.
-<p>&nbsp;</p>
 <p>&nbsp;</p>
 <p><span style="font-size:small"><strong><span style="background-color:#ffffff">1-Sample Html</span></strong></span></p>
 <p><span style="font-size:small"><strong><span style="background-color:#ffffff">
