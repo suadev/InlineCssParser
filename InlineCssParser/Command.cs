@@ -41,30 +41,24 @@ namespace InlineCssParser
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly Package package;
+        private readonly Package _package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Command"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private Command(Package package)
+        private Command(Package package, OleMenuCommandService commandService)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException("package");
-            }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            this.package = package;
+            _package = package ?? throw new ArgumentNullException(nameof(package));
+
             _parser = new Parser();
-
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
-            {
-                var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
-                commandService.AddCommand(menuItem);
-            }
+       
+            var menuCommandID = new CommandID(CommandSet, CommandId);
+            var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+            commandService.AddCommand(menuItem);           
         }
 
         /// <summary>
@@ -83,7 +77,7 @@ namespace InlineCssParser
         {
             get
             {
-                return this.package;
+                return _package;
             }
         }
 
@@ -91,9 +85,9 @@ namespace InlineCssParser
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
+        public static void Initialize(Package package, OleMenuCommandService commandService)
         {
-            Instance = new Command(package);
+            Instance = new Command(package, commandService);
         }
 
         /// <summary>
@@ -105,6 +99,8 @@ namespace InlineCssParser
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             Document doc = dte.ActiveDocument;
             TextDocument txtDoc = doc.Object() as TextDocument;

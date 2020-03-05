@@ -1,4 +1,5 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace InlineCssParser
     {
         public string ParseHtml(string text, List<HtmlElement> elementList, TextDocument txtDoc, IVsStatusbar bar, ref uint cookie)
         {
+           ThreadHelper.ThrowIfNotOnUIThread();
+
             int pointer = 0;
             var startTagIndex = 0;
             var endTagIndex = 0;
@@ -45,7 +48,7 @@ namespace InlineCssParser
                     #endregion
 
                     var elementText = text.Substring(startTagIndex + 1, (endTagIndex - (startTagIndex + 1)));
-                    if (elementText.Contains("style=")) // '=' is really necessary
+                    if (elementText.Contains("style=")) // '=' is necessary
                     {
                         var parsedElement = elementText.Split(' ');
                         var elementName = parsedElement[0];
@@ -92,12 +95,11 @@ namespace InlineCssParser
                         #endregion
 
                         text = text.Replace(elementText, guid);
+
                         pointer = text.IndexOf('>', text.IndexOf(guid)) + 1;
 
                         endTagBefore = endTagBefore + (guid.Length - elementText.Length);
-
-                        //burada entagbefore u revize etmek lazım sanırım. guid.lengt- elementtext.length kadar ekleme yapılabilir
-
+                        
                         elementList.Add(new HtmlElement
                         {
                             Id = elementId,
@@ -123,8 +125,8 @@ namespace InlineCssParser
                 bar.Progress(ref cookie, 0, string.Empty, 0, 0);
                 bar.FreezeOutput(0);
                 bar.Clear();
-                //throw;
             }
+
             return text;
         }
     }
