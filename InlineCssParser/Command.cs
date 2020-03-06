@@ -104,6 +104,7 @@ namespace InlineCssParser
             DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             Document doc = dte.ActiveDocument;
             TextDocument txtDoc = doc.Object() as TextDocument;
+
             var text = txtDoc.CreateEditPoint(txtDoc.StartPoint).GetText(txtDoc.EndPoint);
             text = text.Replace("\r", "");
 
@@ -142,7 +143,7 @@ namespace InlineCssParser
                     cssFileContent = cssFileContent.Replace(";", ";\n");
 
                     //update html file
-                    TextSelection txtSelHtml = (TextSelection)doc.Selection;
+                    var txtSelHtml = (TextSelection)doc.Selection;
                     txtSelHtml.SelectAll();
                     txtSelHtml.Delete();
                     txtSelHtml.Insert(parsed);
@@ -150,9 +151,10 @@ namespace InlineCssParser
                     //create css file
                     var docName = doc.Name.Substring(0, doc.Name.IndexOf('.'));
                     docName = string.Format("{0}.css", docName);
-                    string solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+                  
                     dte.ItemOperations.NewFile(@"General\Text File", docName, EnvDTE.Constants.vsViewKindTextView);
-                    TextSelection txtSelCss = (TextSelection)dte.ActiveDocument.Selection;
+               
+                    var txtSelCss = (TextSelection)dte.ActiveDocument.Selection;
                     txtSelCss.SelectAll();
                     txtSelCss.Delete();
                     txtSelCss.Insert(cssFileContent);

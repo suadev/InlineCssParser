@@ -21,10 +21,12 @@ namespace InlineCssParser
             uint total = (uint)text.Count(q => q == '<');
 
             #region trimming style tags contens
+
             while (text.Contains("; ") || text.Contains(": ")) //to fix style tag content
             {
                 text = text.Replace("; ", ";").Replace(": ", ":");
             }
+
             #endregion
 
             text = text.Replace("STYLE", "style");
@@ -55,8 +57,7 @@ namespace InlineCssParser
                         var elementId = string.Empty;
                         var elementStyle = string.Empty;
                         var elementClass = string.Empty;
-                        var guid = Guid.NewGuid().ToString();
-
+                       
                         #region checking id attr
 
                         var idAttr = parsedElement.FirstOrDefault(q => q.Contains("id="));
@@ -64,6 +65,7 @@ namespace InlineCssParser
                         {
                             elementId = idAttr.Replace("id=", string.Empty).Replace("\"", string.Empty);
                         }
+
                         #endregion
 
                         #region checking style attr
@@ -94,11 +96,13 @@ namespace InlineCssParser
 
                         #endregion
 
+                        var guid = Guid.NewGuid().ToString();
+
                         text = text.Replace(elementText, guid);
 
                         pointer = text.IndexOf('>', text.IndexOf(guid)) + 1;
 
-                        endTagBefore = endTagBefore + (guid.Length - elementText.Length);
+                        endTagBefore += (guid.Length - elementText.Length);
                         
                         elementList.Add(new HtmlElement
                         {
